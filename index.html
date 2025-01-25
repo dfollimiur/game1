@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script src="https://unpkg.com/kaplay@3001/dist/kaplay.js"></script>
+    <script>
+        // Creazione della scena 
+        const k = kaplay({
+            width: 1200,
+            height: 600
+        });
+
+        k.loadBean();
+        k.setGravity(2000);
+
+        // Inserimento dello sprite
+        const player = k.add([
+            k.sprite("bean"),
+            k.pos(k.center()),
+            k.area(),
+            k.body(),
+            k.offscreen(),
+        ]);
+
+        k.add([
+            k.text("GIOCO ANIMATO"),
+            k.pos(50, 50)
+        ]);
+
+
+        player.onKeyPress("space", () => {
+            if (player.isGrounded()) player.jump()
+        });
+
+        player.onExitScreen(() => {
+            k.go("game-over");
+        })
+
+        // Gestione della scena alla fine
+        k.scene("game-over", () => {
+            k.add([
+                k.text("GAME OVER"),
+                k.pos(k.center())
+            ]);
+        })
+
+        // Aggiunta del piano di scorrimento
+        k.add([
+            k.rect(k.width(), 300),
+            k.pos(0, 500),
+            k.area(),
+            k.outline(3),
+            k.body({ isStatic: true })
+        ]);
+
+        // Creazione del contatore
+        let counter = 0;
+        const counterUI = k.add([
+            k.text("0")
+        ]);
+
+        // Creazione del loop dei blocchi che scorrono
+        k.loop(1, () => {
+            counter++;
+            counterUI.text = counter.toString();
+
+            const speeds = [300, 500, 800];
+            const currentSpeed = speeds[Math.floor(Math.random() * speeds.length)];
+
+            k.add([
+                k.rect(50, 50),
+                k.pos(1000, 500),
+                k.area(),
+                k.body(),
+                k.outline(3),
+                k.move(k.vec2(-1, 0), currentSpeed)
+            ])
+        });
+
+    </script>
+</body>
+
+</html>
