@@ -45,8 +45,16 @@
         // Gestione della scena alla fine
         k.scene("game-over", () => {
             k.add([
-                k.text("GAME OVER"),
-                k.pos(k.center())
+                k.text("GAME OVER Score:" + counter.toString(), {
+                    size: 60, // 60 pixels tall
+                    width: 400, // it'll wrap to next line when width exceeds this value
+                    font: "sans-serif", // specify any font you loaded or browser built-in
+                    transform: {
+                        color: Color.fromHex("#ff0000"),
+                    }
+                }),
+                //k.pos(k.center())
+                k.pos(24,24)
             ]);
         })
 
