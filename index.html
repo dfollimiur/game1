@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Semplice videogioco con Kaplay</title>
 </head>
 
 <body>
@@ -13,18 +13,28 @@
         // Creazione della scena 
         const k = kaplay({
             width: 1200,
-            height: 600
+            height: 400,
         });
 
+        // Carico lo sprite
         k.loadBean();
+        // Attivo la forza di gravità nella scena
         k.setGravity(2000);
+        // Carico i suoni
+        k.loadSound("background", "/sounds/stifledscreams.mp3");
+        // Avvio la musica
+        const music = play("background", {
+            volume: 0.5, // set the volume to 50%
+            // speed: 1.5, // speed up the sound
+            loop: true, // loop the sound
+        });
 
-        // Inserimento dello sprite
+        // Inserimento del giocatore (lo sprite)
         const player = k.add([
             k.sprite("bean"),
             k.pos(k.center()),
-            k.area(),
-            k.body(),
+            k.area(), // Spazio di collisione
+            k.body(), // Il body gli attribuisce la possibilità di collidere e la forza di gravità
             k.offscreen(),
         ]);
 
@@ -35,11 +45,23 @@
 
         // Azioni del giocatore
         player.onKeyPress("space", () => {
-            if (player.isGrounded()) player.jump()
+            if (player.isGrounded()) {
+                player.jump()
+                burp()
+            }
+        });
+
+        // player.onKeyPress((key) => {
+        //     debug.log(`key pressed ${key}`);
+        // });
+
+        player.onKeyDown("right", () => {
+            player.move(500, 0);
         });
 
         player.onExitScreen(() => {
             k.go("game-over");
+            music.stop()
         })
 
         // Gestione della scena alla fine
@@ -54,14 +76,14 @@
                     }
                 }),
                 //k.pos(k.center())
-                k.pos(24,24)
+                k.pos(24, 24)
             ]);
         })
 
-        // Aggiunta del piano di scorrimento
+        // Aggiunta del piano di atterraggio e scorrimento
         k.add([
             k.rect(k.width(), 300),
-            k.pos(0, 500),
+            k.pos(0, 400),
             k.area(),
             k.outline(3),
             k.body({ isStatic: true })
@@ -78,12 +100,14 @@
             counter++;
             counterUI.text = counter.toString();
 
-            const speeds = [300, 500, 800];
-            const currentSpeed = speeds[Math.floor(Math.random() * speeds.length)];
+            // const speeds = [300, 500, 800];
+            // const currentSpeed = speeds[Math.floor(Math.random() * speeds.length)];
+
+            const currentSpeed = Math.floor(Math.random() * 1000);
 
             k.add([
                 k.rect(50, 50),
-                k.pos(1000, 500),
+                k.pos(1100, 400),
                 k.area(),
                 k.body(),
                 k.outline(3),
